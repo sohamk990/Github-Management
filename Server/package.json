@@ -1,0 +1,25 @@
+{
+  "name": "mosip",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sohamk990/MOSIP.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sohamk990/MOSIP/issues"
+  },
+  "homepage": "https://github.com/sohamk990/MOSIP#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "octokit": "^2.0.0",
+    "stable": "^0.1.8"
+  }
+}
