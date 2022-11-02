@@ -2,12 +2,25 @@ const dotenv = require('dotenv');
 const {Octokit} = require("octokit");
 
 dotenv.config({path:'../config.env'});
-const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN});
 
 async function get_user(token)
 {
-    const user = await (await octokit.request('GET /user')).data.login;
-    return user;
+    try {
+        const octokit = new Octokit({ auth: token});
+        const response = await octokit.request('GET /user');
+        let username = "User Not Found";
+
+        if(response.status==200)
+        {
+            username = response.data.login;
+        }
+        
+        return username;
+    }
+    catch (error)
+    {
+        return error.message;
+    }
 }
 
 async function get_repo_list()
@@ -48,7 +61,7 @@ async function get_branch_list (repo_name)
 {
     if(await check_repo_exist(repo_name)==false)
     {
-        return;
+        return null;
     }
 
     let username = await get_user();    
@@ -225,5 +238,5 @@ module.exports = {
     get_user, get_repo_list, get_branch_list,
     check_branch_name, check_username, check_repo_exist,
     rename_branch, delete_branch, create_branch, lock_branch,
-    // print_branches, print_repo
+    print_branches, print_repo
 };
