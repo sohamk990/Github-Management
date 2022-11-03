@@ -15,7 +15,7 @@ import{Link} from 'react-router-dom';
 import { Fab } from '@mui/material';
 
 
-const pages=["Login","Rename","Create","Remove", "Lock"];
+const pages=["Tags","Rename","Create","Remove", "Lock"];
 
 export default function ButtonAppBar() {
   return (

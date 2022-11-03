@@ -6,7 +6,7 @@ dotenv.config({path:'../config.env'});
 async function get_user(token)
 {
     try {
-        const octokit = new Octokit({ auth: token});
+        const octokit = new Octokit({auth: token});        
         const response = await octokit.request('GET /user');
         let username = "User Not Found";
 
@@ -17,27 +17,62 @@ async function get_user(token)
         
         return username;
     }
-    catch (error)
-    {
+    catch (error) {
         return error.message;
     }
 }
 
-async function get_repo_list()
+async function get_repo_list(token)
 {
-    let repo_list=[];
-    const repo = await octokit.request('GET /user/repos',{});
-    
-    for (let i=0; i<repo.data.length; i++)
-    {
-        repo_list.push(repo.data[i].name);
-    }
+    try {
+        const octokit = new Octokit({ auth: token});
+        const repo = await octokit.request('GET /user/repos',{});
+        let repo_list=[];
 
-    return repo_list;
+        if(repo.status==200)
+        {
+            for (let i=0; i<repo.data.length; i++)
+            {
+                repo_list.push(repo.data[i].name);
+            }
+        }
+        return repo_list;
+    }
+    catch (error) {
+        return [error.message];
+    }
 }
 
-async function rename_branch (repo_name, old_branch_name, new_branch_name)
+async function get_branch_list (token, repo_name)
 {
+    try {
+    
+        const octokit = new Octokit({auth: token});
+        if(await check_repo_exist(token,repo_name)==false)
+        {
+            return ["empty"];
+        }
+
+        let username = await get_user(token);
+        let branch_list=[];
+        
+        const list_branch = await octokit.request('GET /repos/' + username + '/' + repo_name +'/branches');
+        
+        for (let i=0; i<list_branch.data.length; i++)
+        {
+            branch_list.push(list_branch.data[i].name);
+        }
+
+        return branch_list;
+    }
+    catch(error) {
+
+    }    
+}
+
+async function rename_branch (token, repo_name, old_branch_name, new_branch_name)
+{
+    const octokit = new Octokit({ auth: token});
     if ( (await check_branch_name(repo_name, old_branch_name)==false) || (await check_branch_name(repo_name, new_branch_name)==true) )
     {
         console.log('Invalid Branch Name Provided');
@@ -57,25 +92,7 @@ async function rename_branch (repo_name, old_branch_name, new_branch_name)
     }
 }   
 
-async function get_branch_list (repo_name)
-{
-    if(await check_repo_exist(repo_name)==false)
-    {
-        return null;
-    }
 
-    let username = await get_user();    
-    let branch_list=[];
-    
-    const list_branch = await octokit.request('GET /repos/' + username + '/' + repo_name +'/branches');
-    
-    for (let i=0; i<list_branch.data.length; i++)
-    {
-        branch_list.push(list_branch.data[i].name);
-    }
-
-    return branch_list;
-}
 
 async function delete_branch (repo_name, branch_name)
 {
@@ -173,10 +190,10 @@ const check_username = async(username) => {
     return res;
 }
 
-const check_repo_exist = async(repo_name) => {
+const check_repo_exist = async(token, repo_name) => {
     
     let res = false;
-    let repo_list = await get_repo_list();
+    let repo_list = await get_repo_list(token);
 
     for(let repo of repo_list)
     {

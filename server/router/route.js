@@ -7,12 +7,17 @@ router.post('/user', async (req,res) => {
     res.status(200).json({username:username});
 });
 
-router.get('/branch', async (req,res) => {
-    res.send(await API.get_branch_list(req.body.repo_name));
+router.post('/repo', async (req,res) => {
+    const repo = await API.get_repo_list(req.body.token);
+    // console.log(repo);
+    res.status(200).json({repo:repo});
 });
 
-router.get('/repo', async (req,res) => {
-    res.send(await API.get_repo_list());
+router.post('/branch', async (req,res) => {
+    // res.send();
+    const branches = await API.get_branch_list(req.body.token, req.body.repo_name);
+    // console.log(repo);
+    res.status(200).json({branches:branches});
 });
 
 
