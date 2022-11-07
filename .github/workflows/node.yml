@@ -33,4 +33,3 @@ jobs:
       run: |
         cd server
         npm install
-        CI='' npm start
