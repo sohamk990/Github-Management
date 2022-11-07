@@ -23,8 +23,14 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
       
-    - name: npm install, build, and test
+    - name: Client Check
       run: |
         cd client
         npm install
         CI='' npm run build
+      
+    - name: Server Check
+      run: |
+        cd server
+        npm install
+        CI='' npm start
