@@ -4,6 +4,7 @@ import React, {useState} from 'react'
 import Box from '@mui/material/Box'
 import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, FormGroup, Grid, LinearProgress, Paper, TextField, Typography } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import LinearProgressWithLabel from './LinearWithValueLabel';
 
 const Home = () => {
     const [token, setToken] = useState("")
@@ -79,7 +80,7 @@ const Home = () => {
             <TextField fullWidth disabled id="username" label={username} variant="filled" InputProps={{ readOnly: true }} sx={{m:5, mb:5, width:500,}}/>
             <TextField fullWidth id="token" label="Token" type="password" variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={handleInputs} />
             <Button variant="contained" onClick={postData} sx={{m:5, mb:5}}> Load </Button>
-            
+            <LinearProgressWithLabel value={50}/>
             
             <Grid container spacing={2}>            
             {repo.map( (rep) => ( 
