@@ -45,8 +45,7 @@ async function get_repo_list(token)
 
 async function get_branch_list (token, repo_name)
 {
-    try {
-    
+    try {    
         const octokit = new Octokit({auth: token});
         if(await check_repo_exist(token,repo_name)==false)
         {
@@ -72,46 +71,51 @@ async function get_branch_list (token, repo_name)
 
 async function rename_branch (token, repo_name, old_branch_name, new_branch_name)
 {
-    const octokit = new Octokit({ auth: token});
-    if ( (await check_branch_name(repo_name, old_branch_name)==false) || (await check_branch_name(repo_name, new_branch_name)==true) )
-    {
-        console.log('Invalid Branch Name Provided');
-        return;
-    }
+    try {        
+        const octokit = new Octokit({ auth: token});
+        if ( (await check_branch_name(token,repo_name, old_branch_name)==false) || (await check_branch_name(token,repo_name, new_branch_name)==true) )
+        {
+            return false;
+        }
 
-    let username = await get_user();
-    const branch = await octokit.request('POST /repos/' + username + '/' + repo_name +'/branches/' + old_branch_name + '/rename', {new_name: new_branch_name});
-
-    if(branch.status==201)
-    {
-        console.log('Branch Renamed Succesfully');
+        let username = await get_user(token);
+        const branch = await octokit.request('POST /repos/' + username + '/' + repo_name +'/branches/' + old_branch_name + '/rename', {new_name: new_branch_name});
+        return true;
     }
-    else
-    {
-        console.log('Error Ocurred while renaming branch');
+    catch(error) {
+
     }
 }   
 
 
 
-async function delete_branch (repo_name, branch_name)
+async function delete_branch (token, repo_name, branch_name)
 {
-    if (await check_branch_name(repo_name, branch_name)==false)
-    {
-        return;
-    }
+    try {
+        const octokit = new Octokit({ auth: token});
+        if (await check_branch_name(token,repo_name, branch_name)==false)
+        {
+            return;
+        }
 
-    let username = await get_user();
-    const delete_Branch = await octokit.request('DELETE /repos/' + username + '/' + repo_name +'/git/refs/heads/' + branch_name);
+        let username = await get_user(token);
+        const delete_Branch = await octokit.request('DELETE /repos/' + username + '/' + repo_name +'/git/refs/heads/' + branch_name);
 
-    if (delete_Branch.status==204)
-    {
-        console.log("Branch Deleted Successfuly!");
+        if (delete_Branch.status==204)
+        {
+            return true;
+            console.log("Branch Deleted Successfuly!");
+        }
+        else
+        {
+            return false;
+            console.log("Branch Couldn't be deleted.");
+        }
     }
-    else
-    {
-        console.log("Branch Couldn't be deleted.");
+    catch(error) {
+
     }
+    
 }
 
 async function create_branch (repo_name, parent_branch_name, create_branch_name)
@@ -191,50 +195,54 @@ const check_username = async(username) => {
 }
 
 const check_repo_exist = async(token, repo_name) => {
-    
-    let res = false;
-    let repo_list = await get_repo_list(token);
+    try {
 
-    for(let repo of repo_list)
-    {
-        if(repo.toLowerCase() == repo_name.toLowerCase())
+        const octokit = new Octokit({ auth: token});
+        
+        let res = false;
+        let repo_list = await get_repo_list(token);
+
+        for(let repo of repo_list)
         {
-            res=true;
-            console.log(repo_name + " : Repository exist.");
-            break;
+            if(repo.toLowerCase() == repo_name.toLowerCase())
+            {
+                res=true;
+                console.log(repo_name + " : Repository exist.");
+                break;
+            }
         }
-    }
 
-    if(!res)
-    {
-        console.log(repo_name + " : Repository doesn't exist.");
+        if(!res)
+        {
+            console.log(repo_name + " : Repository doesn't exist.");
+        }
+        
+        return res;
     }
-    
-    return res;
+    catch(error) {
+
+    }    
 }
 
-const check_branch_name = async(repo_name, branch_name) => {
-    
-    let res = false;
-
-    let branch_list = await get_branch_list (repo_name);
-    
-    for(let branch of branch_list)
-    {
-        if(branch == branch_name)
+const check_branch_name = async(token,repo_name, branch_name) => {
+    try {
+        const octokit = new Octokit({ auth: token});
+        let res = false;
+        let branch_list = await get_branch_list (token,repo_name);
+        
+        for(let branch of branch_list)
         {
-            res=true;
-            console.log(branch_name + " : Branch exist.");
-            break;
+            if(branch == branch_name)
+            {
+                res=true;
+                break;
+            }
         }
+        return res;
     }
+    catch(error) {
 
-    if(!res)
-    {
-        console.log(branch_name + " : Branch doesn't exist.");
     }
-
-    return res;
 }
 
 async function print_branches(repo_name)

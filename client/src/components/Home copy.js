@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import { useSelector,useDispatch } from 'react-redux'
 
-import { Box, Accordion, AccordionDetails, AccordionSummary, Button,  Grid, TextField, Typography, IconButton } from '@mui/material'
+import { Box, Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, FormGroup, Grid, TextField, Typography, IconButton } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LinearProgressWithLabel from './LinearWithValueLabel';
 
@@ -12,7 +12,6 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 import { githubToken, githubUsername, githubRepo } from '../action/index'
-import { Stack } from '@mui/system';
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -23,6 +22,7 @@ const Home = () => {
     const [progress, setProgress] = useState(0.0)
     
     const update_token = async() => {
+
         //Updating Username
         const response = await fetch("http://localhost:5000/user",{
             method: "POST",
@@ -38,6 +38,8 @@ const Home = () => {
     }
 
     const update_repo_list = async() => {
+        let ans={};
+
         const repo_response = await fetch("http://localhost:5000/repo", {
             method: "POST",
             headers: {"Content-Type" : "application/json"},
@@ -51,64 +53,31 @@ const Home = () => {
         for (let i=0; i<repo_lst.length; i++)
         {
             const repo_name = repo_lst[i];
-            await update_branch_list(repo_name);
+
+            const branch_response = await fetch("http://localhost:5000/branch", {
+                method: "POST",
+                headers: {"Content-Type" : "application/json"},
+                credentials: 'include',
+                body:JSON.stringify({token:token,repo_name:repo_name})
+            });
+            
+            const branch_res = await branch_response.json();
+            const branch_lst = branch_res.branches;
+
+            if(typeof branch_lst !== "undefined")
+                ans[repo_name]=branch_lst;
+
             setProgress((100*(i+1))/repo_lst.length)
         }
-    }
 
-    const update_branch_list = async(repo_name) => {
-        const branch_response = await fetch("http://localhost:5000/branch", {
-            method: "POST",
-            headers: {"Content-Type" : "application/json"},
-            credentials: 'include',
-            body:JSON.stringify({token:token,repo_name:repo_name})
-        });
-            
-        const branch_res = await branch_response.json();
-        const branch_lst = branch_res.branches;
-
-        if(typeof branch_lst !== "undefined")
-        {
-            repo[repo_name]=Object.values(branch_lst);
-            dispatch(githubRepo({...repo}));
-        }
+        console.log(Object.keys(ans));
+        dispatch(githubRepo(ans));
     }
 
     const postData = async(event) => {
         event.preventDefault();
         await update_token();        
     }
-
-    const rename_branch = async(repo_name, branch) => {        
-        const response = await fetch("http://localhost:5000/rename_branch", {
-            method: "POST",
-            headers: {"Content-Type" : "application/json"},
-            credentials: 'include',
-            body:JSON.stringify({token:token, repo_name:repo_name, old_branch_name:branch, new_branch_name:"R_"+branch })
-        });
-        
-        const result = await response.json();
-        await update_branch_list(repo_name);
-        console.log(result);
-        console.log(repo);
-    }
-
-    const delete_branch = async(repo_name, branch) => {        
-        const response = await fetch("http://localhost:5000/delete_branch", {
-            method: "POST",
-            headers: {"Content-Type" : "application/json"},
-            credentials: 'include',
-            body:JSON.stringify({token:token, repo_name:repo_name, branch_name:branch})
-        });
-        
-        const result = await response.json();
-        await update_branch_list(repo_name);
-        console.log(result);
-    }
-
-    useEffect(() => {
-
-    }, [repo,username,token]);
 
     return (
         <Box align="center" sx={{m:"auto", mt:5, flexGrow:1, }} >        
@@ -117,25 +86,29 @@ const Home = () => {
             <Button variant="contained" onClick={postData} sx={{m:5, mb:5}}> Load </Button>
             <LinearProgressWithLabel value={progress} sx={{m:5,}} />
             
-            <Grid container spacing={2}>
-
+            <Grid container spacing={2}>            
+        
             { Object.keys(repo).map( (rep) => ( 
                 <Grid item xs={3}>
                 <Accordion elevation={4}>
+                                    
                     <AccordionSummary  expandIcon={<ExpandMoreIcon />}  id={rep} >
-                        <Stack direction="row" alignItems="center" gap={1}>
-                            <Typography fontSize='h6.fontSize' fontWeight='bold'> {rep} </Typography>
-                            <IconButton>
-                                <AddIcon sx={{color:"DodgerBlue"}}/>
-                            </IconButton>
-                        </Stack>
+                        <FormGroup>
+                            <FormControlLabel control={<Checkbox />} label={<Typography fontSize='h6.fontSize' fontWeight='bold' >{rep}</Typography>} />
+                        </FormGroup>
+                        
                     </AccordionSummary>
+
                     
-                    <AccordionDetails>
+                    <AccordionDetails>                        
+                        <FormGroup row="true">
                         { repo[rep].map( (branch) => (
-                                <Stack direction="row" alignItems="center" gap={1} id={branch} >
-                                    <Typography> {branch} </Typography>
-                                    <IconButton onClick={(event) => rename_branch(rep, branch)}>
+                            <>
+                                <Box sx={{m:1}}>
+                                    <FormControlLabel control={<Checkbox />} label={<Typography>{branch}</Typography>} />
+                                    
+                                    
+                                    <IconButton>
                                         <DriveFileRenameOutlineIcon sx={{color:"RebeccaPurple"}}/>
                                     </IconButton>
 
@@ -151,11 +124,14 @@ const Home = () => {
                                         <LockOpenIcon sx={{color:"DeepPink"}}/>
                                     </IconButton>
 
-                                    <IconButton onClick={(event) => delete_branch(rep, branch)}>
+                                    <IconButton>
                                         <DeleteForeverIcon sx={{color:"coral"}}/>
                                     </IconButton>
-                                </Stack>
+                                </Box>
+                            </>
                         ))}
+
+                        </FormGroup>                        
                     </AccordionDetails>
                 </Accordion>
                 </Grid>

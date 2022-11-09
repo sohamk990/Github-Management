@@ -1,8 +1,9 @@
-import changeNum from "./incDec";
 import {combineReducers} from "redux";
 
+import { tokenUpdate, usernameUpdate, repoUpdate } from "./githubAPI";
+
 const rootReducer = combineReducers({
-    changeNum,
+    tokenUpdate, usernameUpdate, repoUpdate
 })
 
 export default rootReducer

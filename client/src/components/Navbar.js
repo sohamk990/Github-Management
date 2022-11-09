@@ -9,10 +9,10 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import IconButton from '@mui/material/IconButton';
 
 import GitHubIcon from '@mui/icons-material/GitHub';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import{Link} from 'react-router-dom';
-import { Fab } from '@mui/material';
+// import { Fab } from '@mui/material';
 
 
 const pages=["Tags","Rename","Create","Remove", "Lock"];
@@ -35,9 +35,9 @@ export default function ButtonAppBar() {
           </Box>
 
 
-          <Fab color="Secondary"  component={Link} to="/About">
+          {/* <Fab color="Secondary"  component={Link} to="/About">
             <AccountCircleIcon/>
-          </Fab>
+          </Fab> */}
 
         </Toolbar>
       </AppBar>

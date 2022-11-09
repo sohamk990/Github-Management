@@ -14,12 +14,18 @@ router.post('/repo', async (req,res) => {
 });
 
 router.post('/branch', async (req,res) => {
-    // res.send();
     const branches = await API.get_branch_list(req.body.token, req.body.repo_name);
-    // console.log(repo);
     res.status(200).json({branches:branches});
 });
 
+router.post('/rename_branch', async (req,res) => {
+    const status = await API.rename_branch(req.body.token, req.body.repo_name, req.body.old_branch_name, req.body.new_branch_name);
+    res.status(200).json({status:status});
+});
 
+router.post('/delete_branch', async (req,res) => {
+    const status = await API.delete_branch(req.body.token, req.body.repo_name, req.body.branch_name );
+    res.status(200).json({status:status});
+});
 
 module.exports = router;

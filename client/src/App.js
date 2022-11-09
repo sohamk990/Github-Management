@@ -12,7 +12,7 @@ import Create from './components/Create'
 import Remove from './components/Remove'
 import Lock from './components/Lock'
 import Repo from './components/Repo'
-import Incdec from './components/Incdec'
+
 
 function App() {
   return (
@@ -27,7 +27,6 @@ function App() {
         <Route  exact path="/Create" element={<Create />} />
         <Route  exact path="/Remove" element={<Remove />} />
         <Route  exact path="/Lock" element={<Lock />} />
-        <Route  exact path="/Inc" element={<Incdec />} />
         <Route  exact path="*" element={<Errorpage />} />
       </Routes>
     
