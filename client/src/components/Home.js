@@ -33,7 +33,7 @@ const Home = () => {
     }
 
     useEffect(() => {
-        
+
     }, [repositories,username,token]);
 
     return (
@@ -42,8 +42,7 @@ const Home = () => {
             <TextField fullWidth autoFocus id="token" label="Token" defaultValue={token} type="password" variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={(event)=> dispatch(githubToken(event.target.value))} />
             <Button variant="contained" onClick={postData} sx={{m:5, mb:5}}> Load </Button>
             <LinearProgressWithLabel value={progress} sx={{m:5,}} />
-            <Repo/>
-            
+            <Repo/>            
         </Box>
   )
 }
