@@ -118,10 +118,6 @@ async function create_branch (token, repo_name, parent_branch_name, create_branc
     catch (error) {
         console.log(error.message);
     }
-
-    
-
-    
 }
 
 async function delete_branch (token, repo_name, branch_name)
@@ -149,8 +145,7 @@ async function delete_branch (token, repo_name, branch_name)
     }
     catch(error) {
 
-    }
-    
+    }    
 }
 
 

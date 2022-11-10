@@ -9,7 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Box } from '@mui/system';
-import { IconButton } from '@mui/material';
+import { CircularProgress, Fade, IconButton } from '@mui/material';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 import { rename_branch } from './Github';
@@ -21,6 +21,7 @@ export default function RenameDialog({repo_name,branch_name}) {
   const repositories = useSelector((state) => state.repoUpdate);
 
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [newBranchName, setNewBranchName] = useState(branch_name);
 
   const handleClickOpen = () => {
@@ -32,9 +33,11 @@ export default function RenameDialog({repo_name,branch_name}) {
   };
 
   const handleRenameClose = async () => {
-    setOpen(false);
+    setLoading(true);
     const new_repositories = await rename_branch(token,repositories,repo_name,branch_name,newBranchName);
     dispatch(githubRepo({...new_repositories}));
+    setLoading(false);
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -56,10 +59,16 @@ export default function RenameDialog({repo_name,branch_name}) {
           </DialogContentText>
 
           <TextField fullWidth autoFocus margin="dense" label="New branch name" type="text" variant="standard" onChange={(e)=>{setNewBranchName(e.target.value)}}/>
+          
         </DialogContent>
         
-        <DialogActions>
-        <Button onClick={handleClose}> Cancel </Button>
+        
+        
+        <DialogActions>          
+          <Fade in={loading} unmountOnExit> 
+            <CircularProgress/> 
+          </Fade>          
+          <Button onClick={handleClose}> Cancel </Button>
           <Button onClick={handleRenameClose}> Rename </Button>
         </DialogActions>
 

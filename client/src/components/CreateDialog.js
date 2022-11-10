@@ -9,7 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Box } from '@mui/system';
-import { IconButton } from '@mui/material';
+import { CircularProgress, Fade, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 import { create_branch } from './Github';
@@ -22,6 +22,7 @@ export default function CreateDialog({repo_name,branch_name}) {
   const repositories = useSelector((state) => state.repoUpdate);
 
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [createBranchName, setCreateBranchName] = useState(branch_name);
 
   const handleClickOpen = () => {
@@ -29,9 +30,11 @@ export default function CreateDialog({repo_name,branch_name}) {
   };
 
   const handleCreateClose = async () => {
-    setOpen(false);
+    setLoading(true);    
     const new_repositories = await create_branch(token,repositories,repo_name,branch_name,createBranchName);
     dispatch(githubRepo({...new_repositories}));
+    setLoading(false);
+    setOpen(false);
   };
 
   const handleClose = async () => {
@@ -61,7 +64,10 @@ export default function CreateDialog({repo_name,branch_name}) {
         </DialogContent>
         
         <DialogActions>
-        <Button onClick={handleClose}> Cancel </Button>
+          <Fade in={loading} unmountOnExit> 
+            <CircularProgress/> 
+          </Fade>
+          <Button onClick={handleClose}> Cancel </Button>
           <Button onClick={handleCreateClose}> Create </Button>          
         </DialogActions>
 

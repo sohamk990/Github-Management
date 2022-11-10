@@ -8,7 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Box } from '@mui/system';
-import { IconButton } from '@mui/material';
+import { CircularProgress, Fade, IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 
 import { lock_branch } from './Github';
@@ -20,15 +20,18 @@ export default function LockDialog({repo_name, branch_name}) {
   const repositories = useSelector((state) => state.repoUpdate);
 
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleLockClose = async () => {
-    setOpen(false);
+    setLoading(true);
     const new_repositories = await lock_branch (token, repositories, repo_name, branch_name);
     dispatch(githubRepo({...new_repositories}));
+    setLoading(false);
+    setOpen(false);
   };
 
   const handleClose = async () => {
@@ -56,6 +59,9 @@ export default function LockDialog({repo_name, branch_name}) {
         </DialogContent>
         
         <DialogActions>
+          <Fade in={loading} unmountOnExit> 
+            <CircularProgress/> 
+          </Fade>
         <Button onClick={handleClose}> Cancel </Button>
         <Button onClick={handleLockClose}> Lock </Button>
         </DialogActions>

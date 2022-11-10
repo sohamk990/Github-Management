@@ -9,8 +9,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Box } from '@mui/system';
-import { IconButton } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import { CircularProgress, Fade, IconButton } from '@mui/material';
+import TagIcon from '@mui/icons-material/Tag';
 
 // import { create_branch } from './Github';
 // import { githubRepo } from '../action/index'
@@ -22,6 +22,7 @@ export default function CreateDialog({repo_name}) {
   const repositories = useSelector((state) => state.repoUpdate);
 
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [tags, setTags] = useState("");
 
   const handleClickOpen = () => {
@@ -29,10 +30,12 @@ export default function CreateDialog({repo_name}) {
   };
 
   const handleAddClose = async () => {
-    setOpen(false);
-    console.log(tags);
+    setLoading(true);
     // const new_repositories = await create_branch(token,repositories,repo_name,branch_name,createBranchName);
     // dispatch(githubRepo({...new_repositories}));
+    setLoading(false);
+    setOpen(false);
+    console.log(tags);
   };
 
   const handleClose = async () => {
@@ -47,7 +50,7 @@ export default function CreateDialog({repo_name}) {
   return (
     <Box>
       <IconButton onClick={handleClickOpen}>
-          <AddIcon sx={{color:"DodgerBlue"}}/>     
+          <TagIcon sx={{color:"BurlyWood"}}/>     
       </IconButton>
 
       <Dialog open={open} onClose={handleClose}>
@@ -62,7 +65,10 @@ export default function CreateDialog({repo_name}) {
         </DialogContent>
         
         <DialogActions>
-        <Button onClick={handleClose}> Cancel </Button>
+          <Fade in={loading} unmountOnExit> 
+            <CircularProgress/> 
+          </Fade>
+          <Button onClick={handleClose}> Cancel </Button>
           <Button onClick={handleAddClose}> Add </Button>          
         </DialogActions>
 
