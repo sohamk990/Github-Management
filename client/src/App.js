@@ -12,7 +12,6 @@ import Repo from './components/Repo'
 function App() {
   return (
     <Box>
-    
       <Navbar/>
 
       <Routes>

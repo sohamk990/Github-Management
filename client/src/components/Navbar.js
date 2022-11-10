@@ -30,7 +30,7 @@ export default function ButtonAppBar() {
 
           <Box m="auto">
             <ButtonGroup variant="contained">
-              {pages.map( (page) => ( <Button component={Link} to={`/${page}`}> {page} </Button> ))}
+              {pages.map( (page,idx) => ( <Button component={Link} to={`/${page}`} key={idx}> {page} </Button> ))}
             </ButtonGroup>
           </Box>
 
