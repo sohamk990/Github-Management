@@ -23,8 +23,25 @@ router.post('/rename_branch', async (req,res) => {
     res.status(200).json({status:status});
 });
 
+router.post('/create_branch', async (req,res) => {
+    const status = await API.create_branch(req.body.token, req.body.repo_name, req.body.parent_branch_name, req.body.create_branch_name);
+    res.status(200).json({status:status});
+});
+
 router.post('/delete_branch', async (req,res) => {
     const status = await API.delete_branch(req.body.token, req.body.repo_name, req.body.branch_name );
+    res.status(200).json({status:status});
+});
+
+router.post('/lock_branch', async (req,res) => {
+    // const status = await API.delete_branch(req.body.token, req.body.repo_name, req.body.branch_name );
+    const status=true;
+    res.status(200).json({status:status});
+});
+
+router.post('/unlock_branch', async (req,res) => {
+    // const status = await API.delete_branch(req.body.token, req.body.repo_name, req.body.branch_name );
+    const status=true;
     res.status(200).json({status:status});
 });
 

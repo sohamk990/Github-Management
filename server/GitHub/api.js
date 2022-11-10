@@ -87,7 +87,42 @@ async function rename_branch (token, repo_name, old_branch_name, new_branch_name
     }
 }   
 
+async function create_branch (token, repo_name, parent_branch_name, create_branch_name)
+{
+    try {
+        const octokit = new Octokit({ auth: token});
+        if ( (await check_branch_name(token,repo_name, parent_branch_name)==false) || (await check_branch_name(token,repo_name, create_branch_name)==true) )
+        {
+            console.log("Branch Already Exist");
+            return false;
+        }
+        
+        let username = await get_user(token);
+        const list_ref = await octokit.request('GET /repos/' + username + '/' + repo_name +'/git/ref/heads/' + parent_branch_name);
+        const sha = list_ref.data.object.sha;
 
+        const create_ref = await octokit.request('POST /repos/' + username + '/' + repo_name +'/git/refs',{
+            ref: 'refs/heads/' + create_branch_name,
+            sha: sha
+        });
+
+        if (create_ref.status==201)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    catch (error) {
+        console.log(error.message);
+    }
+
+    
+
+    
+}
 
 async function delete_branch (token, repo_name, branch_name)
 {
@@ -118,31 +153,7 @@ async function delete_branch (token, repo_name, branch_name)
     
 }
 
-async function create_branch (repo_name, parent_branch_name, create_branch_name)
-{
-    if ( (await check_branch_name(repo_name, parent_branch_name)==false) || (await check_branch_name(repo_name, create_branch_name)==true) )
-    {
-        return;
-    }
 
-    let username = await get_user();
-    const list_ref = await octokit.request('GET /repos/' + username + '/' + repo_name +'/git/ref/heads/' + parent_branch_name);
-    const sha = list_ref.data.object.sha;
-
-    const create_ref = await octokit.request('POST /repos/' + username + '/' + repo_name +'/git/refs',{
-        ref: 'refs/heads/' + create_branch_name,
-        sha: sha
-    });
-
-    if (create_ref.status==201)
-    {
-        console.log("Branch Created Successfuly!");
-    }
-    else
-    {
-        console.log("Branch Couldn't be created.");
-    }
-}
 
 async function lock_branch (repo_name, branch_name)
 {
