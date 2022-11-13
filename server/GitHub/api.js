@@ -150,36 +150,60 @@ async function delete_branch (token, repo_name, branch_name)
 
 
 
-async function lock_branch (repo_name, branch_name)
+async function lock_branch (token,repo_name, branch_name)
 {
-    if (await check_branch_name(repo_name, branch_name)==false)
-    {
-        return;
+    try {
+        
+        const octokit = new Octokit({ auth: token});
+        if (await check_branch_name(token,repo_name, branch_name)==false)
+        {
+            return false;
+        }
+
+        let username = await get_user(token);
+        const branch_protection = await octokit.request('PUT /repos/' + username + '/' + repo_name +'/branches/'+ branch_name +'/protection',{
+            required_status_checks: null,
+            // {
+            //     strict: true,
+            //     context: ['success'],
+            // },
+            
+            enforce_admins: true,
+
+            required_pull_request_reviews:
+            {
+                required_approving_review_count: 1,
+            },
+            
+            restrictions: null,
+            allow_deletions:false,
+        });
+
+        return true;
     }
+    catch (error) {
+        console.log(error.message);
+        return (error.message);
+    }
+}
 
-    let username = await get_user();
-    const branch_protection = await octokit.request('PUT /repos/' + username + '/' + repo_name +'/branches/'+ branch_name +'/protection',{
-        required_status_checks:
+async function unlock_branch (token,repo_name, branch_name)
+{
+    try {        
+        const octokit = new Octokit({ auth: token});
+        if (await check_branch_name(token,repo_name, branch_name)==false)
         {
-            strict: true,
-            context: ['success'],
-        },
-        
-        enforce_admins: true,
+            return false;
+        }
 
-        required_pull_request_reviews:
-        {
-            required_approving_review_count: 1,
-        },
-        
-        restrictions: null,
-        
-    });
-
-    // const branch_protection = await octokit.request('PATCH /repos/' + owner_name + '/' + repo_name +'/branches/'+ branch_name +'/protection/required_pull_request_reviews',{
-    //     require_code_owner_reviews: true
-    // });
-    // console.log(branch_protection);
+        let username = await get_user(token);
+        const branch_protection =  await octokit.request('DELETE /repos/' + username + '/' + repo_name +'/branches/'+ branch_name +'/protection');        
+        return true;
+    }
+    catch (error) {
+        console.log(error.message);
+        return (error.message);
+    }
 }
 
 const check_username = async(username) => {
@@ -265,9 +289,10 @@ async function print_repo()
         console.log(repo);
 }
 
+
 module.exports = {
     get_user, get_repo_list, get_branch_list,
     check_branch_name, check_username, check_repo_exist,
-    rename_branch, delete_branch, create_branch, lock_branch,
+    rename_branch, delete_branch, create_branch, lock_branch, unlock_branch,
     print_branches, print_repo
 };

@@ -34,14 +34,12 @@ router.post('/delete_branch', async (req,res) => {
 });
 
 router.post('/lock_branch', async (req,res) => {
-    // const status = await API.delete_branch(req.body.token, req.body.repo_name, req.body.branch_name );
-    const status=true;
+    const status = await API.lock_branch(req.body.token, req.body.repo_name, req.body.branch_name );
     res.status(200).json({status:status});
 });
 
 router.post('/unlock_branch', async (req,res) => {
-    // const status = await API.delete_branch(req.body.token, req.body.repo_name, req.body.branch_name );
-    const status=true;
+    const status = await API.unlock_branch(req.body.token, req.body.repo_name, req.body.branch_name );
     res.status(200).json({status:status});
 });
 
