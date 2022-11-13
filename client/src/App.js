@@ -8,6 +8,7 @@ import Errorpage from './components/Errorpage'
 import Home from './components/Home'
 import Repo from './components/Repo'
 import Branch from './components/Branch'
+import EnhancedTable from './components/EnhancedTable'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route  exact path="/" element={<Home />} />
         <Route  exact path="/Repo" element={<Repo />} />
         <Route  exact path="/Branch" element={<Branch />} />
+        <Route  exact path="/EnhancedTable" element={<EnhancedTable />} />
         <Route  exact path="*" element={<Errorpage />} />
       </Routes>
     
