@@ -7,7 +7,7 @@ import Navbar from './components/Navbar'
 import Errorpage from './components/Errorpage'
 import Home from './components/Home'
 import Repo from './components/Repo'
-
+import Branch from './components/Branch'
 
 function App() {
   return (
@@ -17,6 +17,7 @@ function App() {
       <Routes>
         <Route  exact path="/" element={<Home />} />
         <Route  exact path="/Repo" element={<Repo />} />
+        <Route  exact path="/Branch" element={<Branch />} />
         <Route  exact path="*" element={<Errorpage />} />
       </Routes>
     

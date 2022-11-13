@@ -9,13 +9,10 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import IconButton from '@mui/material/IconButton';
 
 import GitHubIcon from '@mui/icons-material/GitHub';
-// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
 import{Link} from 'react-router-dom';
-// import { Fab } from '@mui/material';
 
 
-const pages=["Repo","Error"];
+const pages=["Repo","Error","Branch"];
 
 export default function ButtonAppBar() {
   return (
