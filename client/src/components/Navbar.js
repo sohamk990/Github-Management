@@ -12,7 +12,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import{Link} from 'react-router-dom';
 
 
-const pages=["Repo","Error","Branch","EnhancedTable"];
+const pages=["Repo","Error","Branch"];
 
 export default function ButtonAppBar() {
   return (
@@ -23,19 +23,14 @@ export default function ButtonAppBar() {
           <IconButton color="inherit" component={Link} to="/">
             <GitHubIcon/>            
           </IconButton>
-          <Typography> GitHub </Typography>
+          <Typography component={Link} to="/" sx={{color:"white", textDecoration: 'none' }}> GitHub </Typography>
 
           <Box m="auto">
             <ButtonGroup variant="contained">
               {pages.map( (page,idx) => ( <Button component={Link} to={`/${page}`} key={idx}> {page} </Button> ))}
             </ButtonGroup>
           </Box>
-
-
-          {/* <Fab color="Secondary"  component={Link} to="/About">
-            <AccountCircleIcon/>
-          </Fab> */}
-
+          
         </Toolbar>
       </AppBar>
       <Toolbar/>

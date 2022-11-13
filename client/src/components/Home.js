@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import { useSelector,useDispatch } from 'react-redux'
 
 import { Box,  Button, TextField, } from '@mui/material'
-import LinearProgressWithLabel from './LinearWithValueLabel';
+import LinearProgressWithLabel from './progress/LinearProgressWithLabel';
 
 import { githubToken, githubUsername, githubRepo } from '../action/index'
 import { update_username, update_branch_list, get_repo_list } from './Github';

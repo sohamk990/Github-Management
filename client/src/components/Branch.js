@@ -1,14 +1,14 @@
 import React, {useState} from 'react'
 import { useSelector } from 'react-redux'
 
-import { Box, Checkbox, IconButton, Paper, Typography, TextField } from '@mui/material'
+import { Box, Checkbox, Paper, Typography, TextField } from '@mui/material'
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material'
-import LockOpenIcon from '@mui/icons-material/LockOpen';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import LockIcon from '@mui/icons-material/Lock';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import AddIcon from '@mui/icons-material/Add';
 
+import UnlockBatchDialog from './batch_dialog/UnlockBatchDialog';
+import LockBatchDialog from './batch_dialog/LockBatchDialog';
+import DeleteBatchDialog from './batch_dialog/DeleteBatchDialog';
+import CreateBatchDialog from './batch_dialog/CreateBatchDialog';
+import RenameBatchDialog from './batch_dialog/RenameBatchDialog';
 
 const Branch = () => {
     const repositories = useSelector((state) => state.repoUpdate);
@@ -17,21 +17,28 @@ const Branch = () => {
     const [repoKeyword, setRepoKeyword] = useState("");
     
     const [branchList,setBranchList] = useState({});
-    const [check,Setcheck] = useState(false);
 
-    const handleClickOpen = () => {
-    
-    };
 
     const handleCheck = (event,repo_name,branch_name) => {
         event.preventDefault();
         const check = event.target.checked;
-
+        if(!branchList.hasOwnProperty(repo_name))
+                branchList[repo_name]=[];
+            
         if(check===true)
         {
-            if(!branchList.hasOwnProperty(repo_name))
-                branchList[repo_name]=[];
-            branchList[repo_name].push(branch_name);
+            
+            let pre=false;            
+            for (let i=0; i<branchList[repo_name].length; i++)
+            {
+                if(branchList[repo_name][i]===branch_name)
+                {
+                    pre=true;
+                    break;
+                }
+            }
+            if(!pre)
+                branchList[repo_name].push(branch_name);
         }
         else
         {
@@ -43,53 +50,75 @@ const Branch = () => {
                 }
             }
         }
-
         setBranchList({...branchList});
-        console.log(branchList);
     };
 
     const handleAllCheck = (event) => {
-        Setcheck(event.target.checked);
-        if(check)
+        setBranchList({});
+        if(event.target.checked)
         {
+            for (let rep in repositories)
+            {
+                if(RegExp(repoKeyword,'i').test(String(rep)))
+                {
+                    for (let i=0; i<repositories[rep].length; i++)
+                    {
+                        const branch_name=repositories[rep][i];
+                        if(RegExp(branchKeyword,'i').test(String(branch_name)))
+                        {                            
+                            if(!branchList.hasOwnProperty(rep))
+                                branchList[rep]=[];
 
-        }
-        else
-        {
-
-        }
+                            branchList[rep].push(branch_name);
+                        }
+                    }
+                }
+            }
+        }            
     };
 
+    const checkChecked = (repo_name,branch_name) => {
+        if(!branchList.hasOwnProperty(repo_name))
+            return false;
+        
+        for (let i=0; i<branchList[repo_name].length; i++)
+        {
+            if(branchList[repo_name][i]===branch_name)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    const handleRepoKeyword = (event) =>{
+        event.preventDefault();        
+        setBranchList({});
+        setRepoKeyword(event.target.value);
+    };
+
+    const handleBranchKeyword = (event) =>{
+        event.preventDefault();        
+        setBranchList({});
+        setBranchKeyword(event.target.value);
+    };
 
     return (
     <Box>
-    <Box display="flex" justifyContent="center" alignItems="center" sx={{ border:5, m:5, }}>
-
-        <IconButton onClick={handleClickOpen} sx={{m:5, mb:5}}>
-            <AddIcon fontSize="large" sx={{color:"DodgerBlue"}}/>     
-        </IconButton>
+    <Box display="flex" justifyContent="center" alignItems="center" sx={{ border:0, m:5, }}>
         
-        <IconButton onClick={handleClickOpen} sx={{m:5, mb:5}}>
-            <DeleteForeverIcon fontSize="large" sx={{color:"coral"}}/>
-        </IconButton>
-
-        <IconButton onClick={handleClickOpen} sx={{m:5, mb:5}}>
-          <DriveFileRenameOutlineIcon fontSize="large" sx={{color:"RebeccaPurple"}}/>
-        </IconButton>
-
-        <IconButton onClick={handleClickOpen} sx={{m:5, mb:5}}>
-          <LockOpenIcon fontSize="large" sx={{color:"DeepPink"}}/>
-        </IconButton>
-
-        <IconButton onClick={handleClickOpen} sx={{m:5, mb:5}}>
-            <LockIcon fontSize="large" sx={{color:"green"}}/>
-        </IconButton>
+        <UnlockBatchDialog branchList={branchList} />
+        <LockBatchDialog branchList={branchList} />
+        <DeleteBatchDialog branchList={branchList} />
+        <CreateBatchDialog branchList={branchList} />
+        <RenameBatchDialog branchList={branchList} />
         
     </Box>
     
-    <Box display="flex" justifyContent="center" alignItems="center" sx={{ border:5, m:5, }}>
-    <TextField fullWidth autoFocus autoComplete='off' id="search" label="Repo Search" defaultValue={repoKeyword} variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={(event)=>{setRepoKeyword(event.target.value)}} />
-        <TextField fullWidth autoFocus autoComplete='off' id="search" label="Branch Search" defaultValue={branchKeyword} variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={(event)=>{setBranchKeyword(event.target.value)}} />        
+    <Box display="flex" justifyContent="center" alignItems="center" sx={{ border:0, m:5, }}>
+        <TextField fullWidth autoFocus autoComplete='off' id="search" label="Repo Search" defaultValue={repoKeyword} variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={handleRepoKeyword} />
+        <TextField fullWidth autoFocus autoComplete='off' id="search" label="Branch Search" defaultValue={branchKeyword} variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={handleBranchKeyword} />        
     </Box>
 
     <Box>
@@ -105,13 +134,13 @@ const Branch = () => {
 
             <TableBody>            
             { Object.keys(repositories).map( (rep,key) => {
-                if(RegExp(repoKeyword,'i').test(String(rep))===true)
+                if(RegExp(repoKeyword,'i').test(String(rep)))
                 {
                     return repositories[rep].map( (branch,key) => {
-                        if(RegExp(branchKeyword,'i').test(String(branch))===true)
+                        if(RegExp(branchKeyword,'i').test(String(branch)))
                         {
                             return  <TableRow key={key} >
-                                <TableCell> <Checkbox onChange={(event)=>{handleCheck(event,rep,branch)}} /> </TableCell>
+                                <TableCell> <Checkbox checked={checkChecked(rep,branch)} onChange={(event)=>{handleCheck(event,rep,branch)}} /> </TableCell>
                                 <TableCell > {rep} </TableCell>
                                 <TableCell > {branch} </TableCell>
                             </TableRow>
