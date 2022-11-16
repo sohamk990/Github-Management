@@ -16,9 +16,11 @@ const Home = () => {
     const repositories = useSelector((state) => state.repoUpdate);
 
     const [progress, setProgress] = useState(0.0);
+    const [tempToken, setTempToken] = useState(0.0);
 
     const postData = async(event) => {
         event.preventDefault();
+        dispatch(githubToken(tempToken))
         dispatch(githubUsername(await update_username(token)));
         
         const repo_lst = await get_repo_list(token);        
@@ -34,12 +36,12 @@ const Home = () => {
 
     useEffect(() => {
 
-    }, [repositories,username,token]);
+    }, [repositories,username,token,tempToken]);
 
     return (
         <Box align="center" sx={{m:"auto", mt:5, flexGrow:1, }} >        
             <TextField fullWidth disabled id="username" label={username} variant="filled" InputProps={{ readOnly: true }} sx={{m:5, mb:5, width:500,}}/>
-            <TextField fullWidth autoFocus id="token" label="Token" defaultValue={token} type="password" variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={(event)=> dispatch(githubToken(event.target.value))} />
+            <TextField fullWidth autoFocus autoComplete="false" id="token" label="Token" defaultValue={token} type="password" variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={(event)=> setTempToken(event.target.value)} />
             <Button variant="contained" onClick={postData} sx={{m:5, mb:5}}> Load </Button>
             <LinearProgressWithLabel value={progress} sx={{m:5,}} />
             <Repo/>            

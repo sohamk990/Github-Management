@@ -23,7 +23,7 @@ export default function CreateBatchDialog({branchList}) {
 
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [createBranchName, setCreateBranchName] = useState("");
+  const [createBranchName, setCreateBranchName] = useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -36,8 +36,13 @@ export default function CreateBatchDialog({branchList}) {
       for (let i=0; i<branchList[repo_name].length; i++)
       {
         const branch_name=branchList[repo_name][i];
-        const new_repositories = await create_branch(token,repositories,repo_name,branch_name,createBranchName);
-        dispatch(githubRepo({...new_repositories}));
+        for (let j=0; j<createBranchName.length; j++)
+        {
+          const cbn = createBranchName[j];
+          console.log(cbn);
+          const new_repositories = await create_branch(token,repositories,repo_name,branch_name,cbn);
+          dispatch(githubRepo({...new_repositories}));
+        }
       }
     }
 
@@ -49,6 +54,13 @@ export default function CreateBatchDialog({branchList}) {
     setOpen(false);
   };
 
+  const handleCreateBranches = (event) => {
+    event.preventDefault();
+    let lst = event.target.value;
+    lst = lst.split(",");
+    console.log(lst);
+    setCreateBranchName([...lst]);
+  };
 
   useEffect(() => {
 
@@ -68,7 +80,7 @@ export default function CreateBatchDialog({branchList}) {
             Enter the new branch name you want to create in repository.
           </DialogContentText>
 
-          <TextField fullWidth autoFocus margin="dense" label="Branch name" type="text" variant="standard" onChange={(e)=>{setCreateBranchName(e.target.value)}}/>
+          <TextField fullWidth autoFocus margin="dense" label="Branch name" type="text" variant="standard" onChange={handleCreateBranches}/>
         </DialogContent>
         
         <DialogActions>

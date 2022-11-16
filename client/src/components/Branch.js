@@ -15,7 +15,7 @@ const Branch = () => {
 
     const [branchKeyword, setBranchKeyword] = useState("");
     const [repoKeyword, setRepoKeyword] = useState("");
-    
+    const [allCheck, setAllCheck] = useState(false);
     const [branchList,setBranchList] = useState({});
 
 
@@ -55,7 +55,11 @@ const Branch = () => {
 
     const handleAllCheck = (event) => {
         setBranchList({});
-        if(event.target.checked)
+
+        let checked = !allCheck;
+        setAllCheck(checked);
+
+        if(checked)
         {
             for (let rep in repositories)
             {
@@ -74,7 +78,9 @@ const Branch = () => {
                     }
                 }
             }
-        }            
+            setBranchList({...branchList});
+        }
+        
     };
 
     const checkChecked = (repo_name,branch_name) => {
@@ -95,12 +101,14 @@ const Branch = () => {
     const handleRepoKeyword = (event) =>{
         event.preventDefault();        
         setBranchList({});
+        setAllCheck(false);
         setRepoKeyword(event.target.value);
     };
 
     const handleBranchKeyword = (event) =>{
-        event.preventDefault();        
+        event.preventDefault();
         setBranchList({});
+        setAllCheck(false);
         setBranchKeyword(event.target.value);
     };
 
@@ -126,7 +134,7 @@ const Branch = () => {
         <Table sx={{ }} >
             <TableHead>
                 <TableRow>
-                    <TableCell> <Checkbox onChange={handleAllCheck} /> </TableCell>
+                    <TableCell> <Checkbox checked={allCheck} onChange={handleAllCheck} /> </TableCell>
                     <TableCell> <Typography fontSize='h5.fontSize' fontWeight='bold'> Repository name </Typography>  </TableCell>
                     <TableCell> <Typography fontSize='h5.fontSize' fontWeight='bold'> Branch name </Typography>  </TableCell>
                 </TableRow>
@@ -156,9 +164,7 @@ const Branch = () => {
         </Table>
         </TableContainer>
     </Box>
-    
     </Box>
-
   )
 }
 
