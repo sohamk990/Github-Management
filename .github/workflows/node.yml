@@ -29,7 +29,6 @@ jobs:
         - name: Installing dependencies
           working-directory: ${{env.working-directory}}
           run: |
-              npm ci
               npm install
         - name: Building Project
           working-directory: ${{env.working-directory}}
@@ -81,6 +80,7 @@ jobs:
         run: docker push sohamk990/mosip-frontend:latest
   
   Containerizing_Backend:    
+    needs: Building_Backend
     runs-on: ubuntu-latest
     env:
       working-directory: ./backend
