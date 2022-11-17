@@ -14,7 +14,7 @@ import{Link} from 'react-router-dom';
 
 const pages=["Repo","Error","Branch"];
 
-export default function ButtonAppBar() {
+export default function Navbar() {
   return (
     <Box>
       <AppBar>

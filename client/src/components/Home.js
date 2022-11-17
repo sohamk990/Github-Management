@@ -20,6 +20,8 @@ const Home = () => {
 
     const postData = async(event) => {
         event.preventDefault();
+        setProgress(0);
+        dispatch(githubRepo({}));
         dispatch(githubToken(tempToken))
         dispatch(githubUsername(await update_username(token)));
         

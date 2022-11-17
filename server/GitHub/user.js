@@ -25,9 +25,8 @@ async function get_user(token)
 
 const get_repo_username = async(token, repo_name) => {
     try {
-        return get_user(token);
+
         const octokit = new Octokit({ auth: token});
-        
 
         const repo = await octokit.request('GET /user/repos',{});
         let username=null;
@@ -56,16 +55,13 @@ async function get_repo_list(token)
     try {
         const octokit = new Octokit({ auth: token});
         const repo = await octokit.request('GET /user/repos',{});
-        const username = await get_user(token);
-        
         let repo_list=[];
 
         if(repo.status==200)
         {
             for (let i=0; i<repo.data.length; i++)
             {
-                if(repo.data[i].owner.login==username)
-                    repo_list.push(repo.data[i].name);
+                repo_list.push(repo.data[i].name);
             }
         }
         return repo_list;
@@ -206,7 +202,6 @@ async function lock_branch (token,repo_name, branch_name)
 
         // let username = await get_user(token);
         let username = await get_repo_username(token,repo_name);
-
         const branch_protection = await octokit.request('PUT /repos/' + username + '/' + repo_name +'/branches/'+ branch_name +'/protection',{
             required_status_checks: null,
             // {
@@ -340,11 +335,15 @@ async function print_repo()
         console.log(repo);
 }
 
+async function main()
+{
+    const token = process.env.GITHUB_TOKEN;
 
-
-module.exports = {
-    get_user, get_repo_list, get_branch_list,
-    check_branch_name, check_username, check_repo_exist,
-    rename_branch, delete_branch, create_branch, lock_branch, unlock_branch,
-    print_branches, print_repo
-};
+    let res = await get_repo_list(token);
+    for (let rep of res)
+    {
+        console.log(rep + ":   " + await get_repo_username(token,rep) );
+        // console.log(res[rep]);
+    }
+}
+main();
