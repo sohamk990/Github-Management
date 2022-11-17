@@ -83,7 +83,7 @@ jobs:
     needs: Building_Backend
     runs-on: ubuntu-latest
     env:
-      working-directory: ./backend
+      working-directory: ./server
       
     steps:
       - uses: actions/checkout@v3
