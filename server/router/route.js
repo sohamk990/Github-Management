@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const API = require ('../GitHub/api')
 
 router.post('/user', async (req,res) => {    
@@ -9,7 +10,6 @@ router.post('/user', async (req,res) => {
 
 router.post('/repo', async (req,res) => {
     const repo = await API.get_repo_list(req.body.token);
-    // console.log(repo);
     res.status(200).json({repo:repo});
 });
 

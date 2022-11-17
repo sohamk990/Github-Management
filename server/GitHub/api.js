@@ -18,6 +18,7 @@ async function get_user(token)
         return username;
     }
     catch (error) {
+        console.log(error.message);
         return error.message;
     }
 }
@@ -39,7 +40,8 @@ async function get_repo_list(token)
         return repo_list;
     }
     catch (error) {
-        return [error.message];
+        console.log(error.message);
+        return [];
     }
 }
 
@@ -49,7 +51,7 @@ async function get_branch_list (token, repo_name)
         const octokit = new Octokit({auth: token});
         if(await check_repo_exist(token,repo_name)==false)
         {
-            return ["empty"];
+            return [];
         }
 
         let username = await get_user(token);
@@ -65,7 +67,8 @@ async function get_branch_list (token, repo_name)
         return branch_list;
     }
     catch(error) {
-
+        console.log(error.message);
+        return [];
     }    
 }
 
@@ -75,6 +78,7 @@ async function rename_branch (token, repo_name, old_branch_name, new_branch_name
         const octokit = new Octokit({ auth: token});
         if ( (await check_branch_name(token,repo_name, old_branch_name)==false) || (await check_branch_name(token,repo_name, new_branch_name)==true) )
         {
+            console.log("Branch Name Already Exist");
             return false;
         }
 
@@ -83,7 +87,8 @@ async function rename_branch (token, repo_name, old_branch_name, new_branch_name
         return true;
     }
     catch(error) {
-
+        console.log(error.message);
+        return (error.message);
     }
 }   
 
@@ -117,6 +122,7 @@ async function create_branch (token, repo_name, parent_branch_name, create_branc
     }
     catch (error) {
         console.log(error.message);
+        return(error.message);
     }
 }
 
@@ -126,7 +132,8 @@ async function delete_branch (token, repo_name, branch_name)
         const octokit = new Octokit({ auth: token});
         if (await check_branch_name(token,repo_name, branch_name)==false)
         {
-            return;
+            console.log(branch_name + ": doesn't Exist.");
+            return false;
         }
 
         let username = await get_user(token);
@@ -134,17 +141,18 @@ async function delete_branch (token, repo_name, branch_name)
 
         if (delete_Branch.status==204)
         {
-            return true;
-            console.log("Branch Deleted Successfuly!");
+            console.log(branch_name + ":  Deleted Successfuly!");
+            return true;            
         }
         else
         {
-            return false;
-            console.log("Branch Couldn't be deleted.");
+            console.log(branch_name + ":  Couldn't be deleted.");
+            return false;            
         }
     }
     catch(error) {
-
+        console.log(error.message);
+        return error.message;
     }    
 }
 
@@ -157,6 +165,7 @@ async function lock_branch (token,repo_name, branch_name)
         const octokit = new Octokit({ auth: token});
         if (await check_branch_name(token,repo_name, branch_name)==false)
         {
+            console.log(branch_name + ": doesn't Exist.");
             return false;
         }
 
@@ -193,6 +202,7 @@ async function unlock_branch (token,repo_name, branch_name)
         const octokit = new Octokit({ auth: token});
         if (await check_branch_name(token,repo_name, branch_name)==false)
         {
+            console.log(branch_name + ": doesn't Exist.");
             return false;
         }
 
@@ -250,7 +260,7 @@ const check_repo_exist = async(token, repo_name) => {
         return res;
     }
     catch(error) {
-
+        console.log(error.message);
     }    
 }
 
@@ -271,7 +281,8 @@ const check_branch_name = async(token,repo_name, branch_name) => {
         return res;
     }
     catch(error) {
-
+        console.log(error.message);
+        return error.message;
     }
 }
 
