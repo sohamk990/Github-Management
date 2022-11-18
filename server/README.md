@@ -1,7 +1,14 @@
 # Backend
 
 ## How to run
-1. npm install
-2. nodemon server.js
 
-### It will run on port 5000
+### Method 1: Manually
+  1. npm install
+  2. nodemon server.js
+
+### Method 2: Docker
+  1. docker pull sohamk990/mosip-backend
+  2. docker run -p 5000:5000 sohamk990/mosip-backend
+
+
+##### It will run on port 5000
