@@ -33,13 +33,12 @@ export default function CreateBatchDialog({branchList}) {
     setLoading(true);
     for (let repo_name in branchList)
     {
-      for (let i=0; i<branchList[repo_name].length; i++)
+      for(let branch_name of branchList[repo_name] )
       {
-        const branch_name=branchList[repo_name][i];
-        for (let j=0; j<createBranchName.length; j++)
+        for (let cbn of createBranchName)
         {
-          const cbn = createBranchName[j];
-          // console.log(cbn);
+          if(cbn.length === 0)
+            continue;
           const new_repositories = await create_branch(token,repositories,repo_name,branch_name,cbn);
           dispatch(githubRepo({...new_repositories}));
         }
@@ -57,7 +56,7 @@ export default function CreateBatchDialog({branchList}) {
   const handleCreateBranches = (event) => {
     event.preventDefault();
     let lst = event.target.value;
-    lst = lst.split(",");
+    lst = lst.split(",").map(element => element.trim());;
     setCreateBranchName([...lst]);
   };
 

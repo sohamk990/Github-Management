@@ -18,7 +18,6 @@ const Branch = () => {
     const [allCheck, setAllCheck] = useState(false);
     const [branchList,setBranchList] = useState({});
 
-
     const handleCheck = (event,repo_name,branch_name) => {
         event.preventDefault();
         const check = event.target.checked;
@@ -26,8 +25,7 @@ const Branch = () => {
                 branchList[repo_name]=[];
             
         if(check===true)
-        {
-            
+        {            
             let pre=false;            
             for (let i=0; i<branchList[repo_name].length; i++)
             {
@@ -52,7 +50,7 @@ const Branch = () => {
         }
         setBranchList({...branchList});
     };
-
+    
     const handleAllCheck = (event) => {
         setBranchList({});
 
@@ -114,14 +112,12 @@ const Branch = () => {
 
     return (
     <Box>
-    <Box display="flex" justifyContent="center" alignItems="center" sx={{ border:0, m:5, }}>
-        
+    <Box display="flex" justifyContent="center" alignItems="center" sx={{ border:0, m:5, }}>        
         <UnlockBatchDialog branchList={branchList} />
         <LockBatchDialog branchList={branchList} />
-        <DeleteBatchDialog branchList={branchList} />
+        <DeleteBatchDialog branchList={branchList} setBranchList={setBranchList}/>
         <CreateBatchDialog branchList={branchList} />
-        <RenameBatchDialog branchList={branchList} />
-        
+        <RenameBatchDialog branchList={branchList} />        
     </Box>
     
     <Box display="flex" justifyContent="center" alignItems="center" sx={{ border:0, m:5, }}>

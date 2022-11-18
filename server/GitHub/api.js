@@ -80,10 +80,10 @@ async function get_branch_list (token, repo_name)
 {
     try {    
         const octokit = new Octokit({auth: token});
-        if(await check_repo_exist(token,repo_name)==false)
-        {
-            return [];
-        }
+        // if(await check_repo_exist(token,repo_name)==false)
+        // {
+        //     return [];
+        // }
 
         // let username = await get_user(token);
         let username = await get_repo_username(token,repo_name);
@@ -108,11 +108,11 @@ async function rename_branch (token, repo_name, old_branch_name, new_branch_name
 {
     try {        
         const octokit = new Octokit({ auth: token});
-        if ( (await check_branch_name(token,repo_name, old_branch_name)==false) || (await check_branch_name(token,repo_name, new_branch_name)==true) )
-        {
-            console.log("Branch Name Already Exist");
-            return false;
-        }
+        // if ( (await check_branch_name(token,repo_name, old_branch_name)==false) || (await check_branch_name(token,repo_name, new_branch_name)==true) )
+        // {
+        //     console.log("Branch Name Already Exist");
+        //     return false;
+        // }
 
         // let username = await get_user(token);
         let username = await get_repo_username(token,repo_name);
@@ -129,11 +129,11 @@ async function create_branch (token, repo_name, parent_branch_name, create_branc
 {
     try {
         const octokit = new Octokit({ auth: token});
-        if ( (await check_branch_name(token,repo_name, parent_branch_name)==false) || (await check_branch_name(token,repo_name, create_branch_name)==true) )
-        {
-            console.log("Branch Already Exist");
-            return false;
-        }
+        // if ( (await check_branch_name(token,repo_name, parent_branch_name)==false) || (await check_branch_name(token,repo_name, create_branch_name)==true) )
+        // {
+        //     console.log("Branch Already Exist");
+        //     return false;
+        // }
         
         // let username = await get_user(token);
         let username = await get_repo_username(token,repo_name);
@@ -164,11 +164,11 @@ async function delete_branch (token, repo_name, branch_name)
 {
     try {
         const octokit = new Octokit({ auth: token});
-        if (await check_branch_name(token,repo_name, branch_name)==false)
-        {
-            console.log(branch_name + ": doesn't Exist.");
-            return false;
-        }
+        // if (await check_branch_name(token,repo_name, branch_name)==false)
+        // {
+        //     console.log(branch_name + ": doesn't Exist.");
+        //     return false;
+        // }
 
         // let username = await get_user(token);
         let username = await get_repo_username(token,repo_name);
@@ -198,11 +198,11 @@ async function lock_branch (token,repo_name, branch_name)
     try {
         
         const octokit = new Octokit({ auth: token});
-        if (await check_branch_name(token,repo_name, branch_name)==false)
-        {
-            console.log(branch_name + ": doesn't Exist.");
-            return false;
-        }
+        // if (await check_branch_name(token,repo_name, branch_name)==false)
+        // {
+        //     console.log(branch_name + ": doesn't Exist.");
+        //     return false;
+        // }
 
         // let username = await get_user(token);
         let username = await get_repo_username(token,repo_name);
@@ -237,11 +237,11 @@ async function unlock_branch (token,repo_name, branch_name)
 {
     try {        
         const octokit = new Octokit({ auth: token});
-        if (await check_branch_name(token,repo_name, branch_name)==false)
-        {
-            console.log(branch_name + ": doesn't Exist.");
-            return false;
-        }
+        // if (await check_branch_name(token,repo_name, branch_name)==false)
+        // {
+        //     console.log(branch_name + ": doesn't Exist.");
+        //     return false;
+        // }
 
         // let username = await get_user(token);
         let username = await get_repo_username(token,repo_name);

@@ -16,7 +16,7 @@ const Home = () => {
     const repositories = useSelector((state) => state.repoUpdate);
 
     const [progress, setProgress] = useState(0.0);
-    const [tempToken, setTempToken] = useState(0.0);
+    const [tempToken, setTempToken] = useState(token);
 
     const postData = async(event) => {
         event.preventDefault();

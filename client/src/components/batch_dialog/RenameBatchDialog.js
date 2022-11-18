@@ -36,9 +36,8 @@ export default function RenameBatchDialog({branchList}) {
     setLoading(true);
     for (let repo_name in branchList)
     {
-      for (let i=0; i<branchList[repo_name].length; i++)
+      for(let branch_name of branchList[repo_name] )
       {
-        const branch_name=branchList[repo_name][i];
         const new_repositories = await rename_branch(token,repositories,repo_name,branch_name,newBranchName);
         dispatch(githubRepo({...new_repositories}));
       }

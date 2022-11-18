@@ -14,7 +14,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { delete_branch } from '../Github';
 import { githubRepo } from '../../action/index'
 
-export default function DeleteBatchDialog({branchList}) {
+export default function DeleteBatchDialog({branchList, setBranchList}) {
 
   const dispatch = useDispatch();
   const token = useSelector((state) => state.tokenUpdate);
@@ -29,16 +29,32 @@ export default function DeleteBatchDialog({branchList}) {
 
   const handleDeleteClose = async () => {
     setLoading(true);
+
     for (let repo_name in branchList)
     {
-      for (let i=0; i<branchList[repo_name].length; i++)
+      for(let branch_name of branchList[repo_name] )
       {
-        const branch_name=branchList[repo_name][i];
         const new_repositories = await delete_branch (token, repositories, repo_name, branch_name);
-        dispatch(githubRepo({...new_repositories}));
+        dispatch(githubRepo({...new_repositories}));         
       }
     }
+
+    for (let repo_name in branchList)
+    {
+      if(!repositories.hasOwnProperty(repo_name))
+        delete branchList[repo_name];
+      else
+      {
+        const filteredList = branchList[repo_name].filter(value => repositories[repo_name].includes(value));
+        branchList[repo_name] = filteredList;
+        if(branchList[repo_name].length===0)
+          delete branchList[repo_name];
+      }
+      setBranchList({...branchList});
+    }
     
+    // console.log(branchList);
+
     setLoading(false);
     setOpen(false);
   };
