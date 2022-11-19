@@ -12,7 +12,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import{Link} from 'react-router-dom';
 
 
-const pages=["Repo","Error","Branch"];
+const pages=["Repo","Branch","Error",];
 
 export default function Navbar() {
   return (

@@ -156,6 +156,79 @@ async function create_branch (token, repo_name, parent_branch_name, create_branc
     }
 }
 
+const create_tag = async (token,repo_name, branch_name, tag_name) => {
+    try {
+        const octokit = new Octokit({ auth: token});
+        let username = await get_repo_username(token,repo_name);
+        
+        const branch_ref = await octokit.request('GET /repos/' + username + '/' + repo_name +'/git/ref/heads/' + branch_name);
+        const branch_sha = branch_ref.data.object.sha;
+        // console.log(branch_sha);
+
+        const response =  await octokit.request('POST /repos/{owner}/{repo}/git/refs', {
+            owner: username,
+            repo: repo_name,
+            tag: tag_name,
+            ref: 'refs/tags/' + tag_name,
+            sha: branch_sha,
+          });
+        
+        if(response.status==201)
+            return true;
+        else
+            return false;
+    }
+    catch(error)
+    {
+        console.log(error.message);
+        return (error.message);
+    }
+};
+
+// const create_tag = async (token,repo_name, branch_name, tag_name, tag_message, tag_type) => {
+//     try {
+//         const octokit = new Octokit({ auth: token});
+//         let username = await get_repo_username(token,repo_name);
+        
+//         // const list_ref = await octokit.request('GET /repos/' + username + '/' + repo_name +'/git/ref/tags/' + tag_name);
+//         const branch_ref = await octokit.request('GET /repos/' + username + '/' + repo_name +'/git/ref/heads/' + branch_name);
+//         const branch_sha = branch_ref.data.object.sha;
+//         // console.log(branch_sha);
+
+//         const tag_ref = await octokit.request('POST /repos/{owner}/{repo}/git/tags', {
+//             owner: username,
+//             repo: repo_name,
+//             tag: tag_name,
+//             message: tag_message,
+//             object: branch_sha,
+//             type: tag_type,
+//           });
+        
+//         const tag_sha = tag_ref.data.sha;
+//         console.log(tag_sha);
+
+//         const response =  await octokit.request('POST /repos/{owner}/{repo}/git/refs', {
+//             owner: username,
+//             repo: repo_name,
+//             tag: tag_name,
+//             ref: 'refs/tags/' + tag_name,
+//             sha: tag_sha,
+//           });
+        
+//         console.log(response.status);
+        
+//         if(response.status==201)
+//             return true;
+//         else
+//             return false;
+//     }
+//     catch(error)
+//     {
+//         console.log(error.message);
+//         return (error.message);
+//     }
+// };
+
 async function delete_branch (token, repo_name, branch_name)
 {
     try {
@@ -321,6 +394,8 @@ const check_branch_name = async(token,repo_name, branch_name) => {
     }
 }
 
+
+
 async function print_branches(repo_name)
 {
     const branch_list = await get_branch_list('MOSIP_Test');
@@ -339,11 +414,11 @@ async function main()
 {
     const token = process.env.GITHUB_TOKEN;
 
-    let res = await get_repo_list(token);
-    for (let rep of res)
-    {
-        console.log(rep + ":   " + await get_repo_username(token,rep) );
-        // console.log(res[rep]);
-    }
+    let res;
+    res = await get_user(token);
+    console.log(res);
+
+    res = await create_tag(token,'MOSIP_Test','main','v7.0');
+    console.log(res);
 }
 main();

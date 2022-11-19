@@ -43,4 +43,9 @@ router.post('/unlock_branch', async (req,res) => {
     res.status(200).json({status:status});
 });
 
+router.post('/create_tag', async (req,res) => {
+    const status = await API.create_tag(req.body.token, req.body.repo_name, req.body.branch_name, req.body.tag_name);
+    res.status(200).json({status:status});
+});
+
 module.exports = router;

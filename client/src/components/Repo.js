@@ -9,7 +9,7 @@ import DeleteDialog from './DeleteDialog';
 import CreateDialog from './CreateDialog';
 import LockDialog from './LockDialog';
 import UnlockDialog from './UnlockDialog';
-import AddDialog from './AddDialog';
+import AddDialog  from './AddDialog';
 
 const Repo = () => {
     const repositories = useSelector((state) => state.repoUpdate);
@@ -23,20 +23,21 @@ const Repo = () => {
                     <AccordionSummary  expandIcon={<ExpandMoreIcon />} >
                         <Stack direction="row" alignItems="center" gap={1}>
                             <Typography fontSize='h6.fontSize' fontWeight='bold'> {rep} </Typography>
-                            <AddDialog repo_name={rep}/>
+                            
                         </Stack>
                     </AccordionSummary>
                     
                     <AccordionDetails>
-                        { repositories[rep].map( (branch,key) => (
-                            <Stack direction="row" alignItems="center" gap={1} key={key} >
-                                <Typography> {branch} </Typography>
-                                <RenameDialog repo_name={rep} branch_name={branch}/>
-                                <CreateDialog repo_name={rep} branch_name={branch}/>                                    
-                                <LockDialog repo_name={rep} branch_name={branch}/>
-                                <UnlockDialog repo_name={rep} branch_name={branch}/>
-                                <DeleteDialog repo_name={rep} branch_name={branch}/>
-                            </Stack>
+                        { repositories[rep].map( (branch,key) => (                                
+                                <Stack direction="row" alignItems="center" justify="left" gap={1} key={key} sx={{border:0}} >                                    
+                                    <Typography> {branch} </Typography>
+                                    <RenameDialog repo_name={rep} branch_name={branch}/>
+                                    <CreateDialog repo_name={rep} branch_name={branch}/>                                    
+                                    <LockDialog repo_name={rep} branch_name={branch}/>
+                                    <UnlockDialog repo_name={rep} branch_name={branch}/>
+                                    <DeleteDialog repo_name={rep} branch_name={branch}/>
+                                    <AddDialog repo_name={rep} branch_name={branch}/>
+                                </Stack>
                         ))}
                     </AccordionDetails>
                 </Accordion>

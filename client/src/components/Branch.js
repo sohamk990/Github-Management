@@ -9,12 +9,14 @@ import LockBatchDialog from './batch_dialog/LockBatchDialog';
 import DeleteBatchDialog from './batch_dialog/DeleteBatchDialog';
 import CreateBatchDialog from './batch_dialog/CreateBatchDialog';
 import RenameBatchDialog from './batch_dialog/RenameBatchDialog';
+import AddBatchDialog from './batch_dialog/AddBatchDialog';
 
 const Branch = () => {
     const repositories = useSelector((state) => state.repoUpdate);
 
-    const [branchKeyword, setBranchKeyword] = useState("");
-    const [repoKeyword, setRepoKeyword] = useState("");
+    const [branchKeyword, setBranchKeyword] = useState(RegExp("",'i'));
+    const [repoKeyword, setRepoKeyword] = useState(RegExp("",'i'));
+
     const [allCheck, setAllCheck] = useState(false);
     const [branchList,setBranchList] = useState({});
 
@@ -97,17 +99,33 @@ const Branch = () => {
     };
 
     const handleRepoKeyword = (event) =>{
-        event.preventDefault();        
-        setBranchList({});
-        setAllCheck(false);
-        setRepoKeyword(event.target.value);
+        try {
+            event.preventDefault();        
+            setBranchList({});
+            setAllCheck(false);
+            
+            const reg = RegExp(event.target.value,'i');
+            setRepoKeyword(reg);
+        }
+        catch(error)
+        {
+            console.log(error.message);
+        }
     };
 
     const handleBranchKeyword = (event) =>{
-        event.preventDefault();
-        setBranchList({});
-        setAllCheck(false);
-        setBranchKeyword(event.target.value);
+        try {
+            event.preventDefault();
+            setBranchList({});
+            setAllCheck(false);
+
+            const reg = RegExp(event.target.value,'i');
+            setBranchKeyword(reg);
+        }
+        catch(error)
+        {
+            console.log(error.message);
+        }
     };
 
     return (
@@ -117,12 +135,13 @@ const Branch = () => {
         <LockBatchDialog branchList={branchList} />
         <DeleteBatchDialog branchList={branchList} setBranchList={setBranchList}/>
         <CreateBatchDialog branchList={branchList} />
-        <RenameBatchDialog branchList={branchList} />        
+        <RenameBatchDialog branchList={branchList} />      
+        <AddBatchDialog branchList={branchList} />   
     </Box>
     
     <Box display="flex" justifyContent="center" alignItems="center" sx={{ border:0, m:5, }}>
-        <TextField fullWidth autoFocus autoComplete='off' id="search" label="Repo Search" defaultValue={repoKeyword} variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={handleRepoKeyword} />
-        <TextField fullWidth autoFocus autoComplete='off' id="search" label="Branch Search" defaultValue={branchKeyword} variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={handleBranchKeyword} />        
+        <TextField fullWidth autoFocus autoComplete='off' id="search" label="Repo Search" defaultValue={""} variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={handleRepoKeyword} />
+        <TextField fullWidth autoFocus autoComplete='off' id="search" label="Branch Search" defaultValue={""} variant="outlined" sx={{m:5, mb:5, width:500,}} onChange={handleBranchKeyword} />        
     </Box>
     
     <Box>
@@ -138,10 +157,12 @@ const Branch = () => {
 
             <TableBody>            
             { Object.keys(repositories).map( (rep,key) => {
-                if(RegExp(repoKeyword,'i').test(String(rep)))
+                // if(RegExp(repoKeyword,'i').test(String(rep)))
+                if(repoKeyword.test(String(rep)))
                 {
                     return repositories[rep].map( (branch,key) => {
-                        if(RegExp(branchKeyword,'i').test(String(branch)))
+                        // if(RegExp(branchKeyword,'i').test(String(branch)))
+                        if(branchKeyword.test(String(branch)))
                         {
                             return  <TableRow key={key} >
                                 <TableCell> <Checkbox checked={checkChecked(rep,branch)} onChange={(event)=>{handleCheck(event,rep,branch)}} /> </TableCell>

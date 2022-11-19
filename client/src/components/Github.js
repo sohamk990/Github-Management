@@ -129,3 +129,15 @@ export const unlock_branch = async(token, repo, repo_name, branch_name) => {
     return await update_branch_list(token, repo, repo_name);
 }
 
+export const create_tag = async(token, repo, repo_name, branch_name, tag_name) => {        
+    const response = await fetch("http://localhost:5000/create_tag", {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        credentials: 'include',
+        body:JSON.stringify({token:token, repo_name:repo_name, branch_name:branch_name, tag_name:tag_name})
+    });
+    
+    const result = await response.json();
+    console.log(result);
+    return await update_branch_list(token, repo, repo_name);
+}
